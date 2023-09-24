@@ -17,8 +17,8 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         Map<String, String> params = getParameters().getNamed();
 
-        GameEngine model = new GameEngine("/resources/config.json");
-        GameWindow window = new GameWindow(model, 640, 400);
+        GameEngine model = new GameEngine("src/main/resources/config.json");
+        GameWindow window = new GameWindow(model, model.getGameWidth(), model.getGameHeight());
         window.run();
 
         primaryStage.setTitle("Space Invaders");

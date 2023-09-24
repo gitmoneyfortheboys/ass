@@ -1,5 +1,7 @@
 package invaders.engine;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,11 @@ import invaders.entities.Player;
 import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * This class manages the main loop and logic of the game
@@ -21,14 +28,46 @@ public class GameEngine {
 	private boolean left;
 	private boolean right;
 
-	public GameEngine(String config){
-		// read the config here
-		gameobjects = new ArrayList<GameObject>();
-		renderables = new ArrayList<Renderable>();
+	private int gameWidth;
+    private int gameHeight;
 
-		player = new Player(new Vector2D(200, 380));
-		renderables.add(player);
-	}
+	public GameEngine(String config){
+    gameobjects = new ArrayList<GameObject>();
+    renderables = new ArrayList<Renderable>();
+
+    JSONParser parser = new JSONParser();
+    try {
+        JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(config));
+        JSONObject game = (JSONObject) jsonObject.get("Game");
+        JSONObject size = (JSONObject) game.get("size");
+        this.gameWidth = ((Long) size.get("x")).intValue();
+        this.gameHeight = ((Long) size.get("y")).intValue();
+
+        // Create game objects here using the parsed values...
+
+        JSONObject player = (JSONObject) jsonObject.get("Player");
+        JSONObject playerPosition = (JSONObject) player.get("position");
+        this.player = new Player(new Vector2D(((Long) playerPosition.get("x")).intValue(), ((Long) playerPosition.get("y")).intValue()));
+		renderables.add(this.player);
+
+        JSONArray bunkers = (JSONArray) jsonObject.get("Bunkers");
+        for (Object o : bunkers) {
+            JSONObject bunker = (JSONObject) o;
+            // Create bunker objects here using the parsed values...
+        }
+
+    } catch (IOException | ParseException e) {
+        e.printStackTrace();
+    }
+}
+
+	public int getGameWidth() {
+        return this.gameWidth;
+    }
+
+    public int getGameHeight() {
+        return this.gameHeight;
+    }
 
 	/**
 	 * Updates the game/simulation

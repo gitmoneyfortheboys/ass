@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
 public class GameWindow {
+    private GameEngine gameEngine;
 	private final int width;
     private final int height;
 	private Scene scene;
@@ -28,20 +29,19 @@ public class GameWindow {
     private static final double VIEWPORT_MARGIN = 280.0;
 
 	public GameWindow(GameEngine model, int width, int height){
-		this.width = width;
-        this.height = height;
-        this.model = model;
-        pane = new Pane();
-        scene = new Scene(pane, width, height);
-        this.background = new SpaceBackground(model, pane);
+    this.width = model.getGameWidth();
+    this.height = model.getGameHeight();
+    this.model = model;
+    pane = new Pane();
+    scene = new Scene(pane, this.width, this.height);
+    this.background = new SpaceBackground(model, pane);
 
-        KeyboardInputHandler keyboardInputHandler = new KeyboardInputHandler(this.model);
+    KeyboardInputHandler keyboardInputHandler = new KeyboardInputHandler(this.model);
 
-        scene.setOnKeyPressed(keyboardInputHandler::handlePressed);
-        scene.setOnKeyReleased(keyboardInputHandler::handleReleased);
+    scene.setOnKeyPressed(keyboardInputHandler::handlePressed);
+    scene.setOnKeyReleased(keyboardInputHandler::handleReleased);
 
-        entityViews = new ArrayList<EntityView>();
-
+    entityViews = new ArrayList<EntityView>();
     }
 
 	public void run() {
