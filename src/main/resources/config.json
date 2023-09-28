@@ -7,12 +7,13 @@
   },
   "Player": {
     "colour": "green",
-    "speed": 1,
+    "speed": 1.0,
     "lives": 3,
     "position": {
-      "x": 300,
-      "y": 750
+      "x": 100,
+      "y": 100
     }
+
   },
   "Bunkers": [
     {

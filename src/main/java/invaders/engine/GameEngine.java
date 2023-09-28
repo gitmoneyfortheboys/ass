@@ -47,7 +47,10 @@ public class GameEngine {
 
         JSONObject player = (JSONObject) jsonObject.get("Player");
         JSONObject playerPosition = (JSONObject) player.get("position");
-        this.player = new Player(new Vector2D(((Long) playerPosition.get("x")).intValue(), ((Long) playerPosition.get("y")).intValue()));
+        String color = (String) player.get("color");
+        double speed = ((Double) player.get("speed")).doubleValue();
+        int lives = ((Long) player.get("lives")).intValue();
+        this.player = new Player(new Vector2D(((Long) playerPosition.get("x")).intValue(), ((Long) playerPosition.get("y")).intValue()), color, speed, lives);
 		renderables.add(this.player);
 
         JSONArray bunkers = (JSONArray) jsonObject.get("Bunkers");

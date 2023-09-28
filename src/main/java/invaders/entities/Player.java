@@ -13,6 +13,9 @@ import java.io.File;
 public class Player implements Moveable, Damagable, Renderable {
 
     private final Vector2D position;
+    private final String color;
+    private final double speed;
+    private int lives;
     private final Animator anim = null;
     private double health = 100;
 
@@ -20,9 +23,12 @@ public class Player implements Moveable, Damagable, Renderable {
     private final double height = 30;
     private final Image image;
 
-    public Player(Vector2D position){
+    public Player(Vector2D position, String color, double speed, int lives){
         this.image = new Image(new File("src/main/resources/player.png").toURI().toString(), width, height, true, true);
         this.position = position;
+        this.color = color;
+        this.speed = speed;
+        this.lives = lives;
     }
 
     @Override
