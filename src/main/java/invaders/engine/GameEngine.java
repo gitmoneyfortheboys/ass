@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import invaders.GameObject;
+import invaders.entities.Bunker;
 import invaders.entities.Player;
 import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
@@ -102,6 +103,22 @@ public class GameEngine {
 				ro.getPosition().setY(1);
 			}
 		}
+
+		for (GameObject projectile : gameobjects) {
+            for (Renderable renderable : renderables) {
+                if (renderable instanceof Bunker) {
+                    Bunker bunker = (Bunker) renderable;
+                    if (projectile.collidesWith(bunker)) {
+                        bunker.takeDamage(projectile.getDamage());
+                        removeGameObject(projectile);
+                        if (bunker.isDestroyed()) {
+                            removeRenderable(bunker);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
 	}
 
 	public List<Renderable> getRenderables(){
@@ -137,5 +154,13 @@ public class GameEngine {
 		if(right){
 			player.right();
 		}
+	}
+
+	public void removeGameObject(GameObject gameObject) {
+    	this.gameobjects.remove(gameObject);
+	}
+
+	public void removeRenderable(Renderable renderable) {
+		this.renderables.remove(renderable);
 	}
 }
