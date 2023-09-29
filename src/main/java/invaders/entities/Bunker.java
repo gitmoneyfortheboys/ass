@@ -2,12 +2,13 @@ package invaders.entities;
 
 import java.io.File;
 
+import invaders.GameObject;
 import invaders.logic.Damagable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 import javafx.scene.image.Image;
 
-public class Bunker implements Damagable, Renderable {
+public class Bunker implements Damagable, Renderable, GameObject {
     private Vector2D position;
     private String color;
     private double health;
@@ -82,5 +83,31 @@ public class Bunker implements Damagable, Renderable {
 
     public boolean isDestroyed() {
         return this.isDestroyed;
+    }
+
+    @Override
+    public void start() {
+        // No initialization needed for Bunker
+    }
+
+    @Override
+    public void update() {
+        // Check if Bunker is destroyed and perform cleanup if necessary
+        if (this.isDestroyed()) {
+            // Cleanup logic here...
+        }
+    }
+
+    @Override
+    public boolean collidesWith(Renderable renderable) {
+        double dx = Math.abs(this.position.getX() - renderable.getPosition().getX());
+        double dy = Math.abs(this.position.getY() - renderable.getPosition().getY());
+        return dx < (this.width + renderable.getWidth()) / 2 && dy < (this.height + renderable.getHeight()) / 2;
+    }
+
+    @Override
+    public double getDamage() {
+        // Bunker doesn't do any damage
+        return 0;
     }
 }

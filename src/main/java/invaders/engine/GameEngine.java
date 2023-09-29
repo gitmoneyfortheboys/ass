@@ -16,6 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import java.util.Iterator;
 
 /**
  * This class manages the main loop and logic of the game
@@ -44,7 +45,19 @@ public class GameEngine {
         this.gameWidth = ((Long) size.get("x")).intValue();
         this.gameHeight = ((Long) size.get("y")).intValue();
 
-        // Create game objects here using the parsed values...
+        JSONArray bunkers = (JSONArray) jsonObject.get("Bunkers");
+		for (Object o : bunkers) {
+			JSONObject bunker = (JSONObject) o;
+			JSONObject bunkerPosition = (JSONObject) bunker.get("position");
+			JSONObject bunkerSize = (JSONObject) bunker.get("size");
+			double x = ((Long) bunkerPosition.get("x")).doubleValue();
+			double y = ((Long) bunkerPosition.get("y")).doubleValue();
+			double width = ((Long) bunkerSize.get("x")).doubleValue();
+			double height = ((Long) bunkerSize.get("y")).doubleValue();
+			Bunker newBunker = new Bunker(new Vector2D(x, y), "green", 100, width, height);
+			gameobjects.add(newBunker);
+			renderables.add(newBunker);
+		}
 
         JSONObject player = (JSONObject) jsonObject.get("Player");
         JSONObject playerPosition = (JSONObject) player.get("position");
@@ -54,11 +67,6 @@ public class GameEngine {
         this.player = new Player(new Vector2D(((Long) playerPosition.get("x")).intValue(), ((Long) playerPosition.get("y")).intValue()), color, speed, lives);
 		renderables.add(this.player);
 
-        JSONArray bunkers = (JSONArray) jsonObject.get("Bunkers");
-        for (Object o : bunkers) {
-            JSONObject bunker = (JSONObject) o;
-            // Create bunker objects here using the parsed values...
-        }
 
     } catch (IOException | ParseException e) {
         e.printStackTrace();
@@ -104,21 +112,23 @@ public class GameEngine {
 			}
 		}
 
-		for (GameObject projectile : gameobjects) {
-            for (Renderable renderable : renderables) {
-                if (renderable instanceof Bunker) {
-                    Bunker bunker = (Bunker) renderable;
-                    if (projectile.collidesWith(bunker)) {
-                        bunker.takeDamage(projectile.getDamage());
-                        removeGameObject(projectile);
-                        if (bunker.isDestroyed()) {
-                            removeRenderable(bunker);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+		Iterator<GameObject> gameObjectIterator = gameobjects.iterator();
+		while (gameObjectIterator.hasNext()) {
+			GameObject projectile = gameObjectIterator.next();
+			for (Renderable renderable : renderables) {
+				if (renderable instanceof Bunker) {
+					Bunker bunker = (Bunker) renderable;
+					if (projectile.collidesWith(bunker)) {
+						bunker.takeDamage(projectile.getDamage());
+						gameObjectIterator.remove();
+						if (bunker.isDestroyed()) {
+							renderables.remove(bunker);
+						}
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	public List<Renderable> getRenderables(){
