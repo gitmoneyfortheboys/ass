@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import invaders.entities.Projectile;
+import invaders.physics.Vector2D;
+
 class KeyboardInputHandler {
     private final GameEngine model;
     private boolean left = false;
@@ -42,6 +45,18 @@ class KeyboardInputHandler {
                 MediaPlayer shoot = sounds.get("shoot");
                 shoot.stop();
                 shoot.play();
+                
+                // Create a new projectile
+                Vector2D position = new Vector2D(model.getPlayer().getPosition().getX(), model.getPlayer().getPosition().getY());
+                double speed = 5.0;
+                double damage = 10.0;
+                double width = 5.0;
+                double height = 10.0;
+                Projectile projectile = new Projectile(position, speed, damage, width, height);
+                
+                // Add the projectile to the game engine
+                model.addGameObject(projectile);
+                model.addRenderable(projectile);
             }
         }
 

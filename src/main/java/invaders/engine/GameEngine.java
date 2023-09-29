@@ -170,7 +170,19 @@ public class GameEngine {
     	this.gameobjects.remove(gameObject);
 	}
 
+	public void addGameObject(GameObject gameObject) {
+		this.gameobjects.add(gameObject);
+	}
+
+	public void addRenderable(Renderable renderable) {
+        this.renderables.add(renderable);
+    }
+
 	public void removeRenderable(Renderable renderable) {
 		this.renderables.remove(renderable);
 	}
+
+	public Player getPlayer() {
+        return this.player;
+    }
 }
