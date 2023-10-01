@@ -28,4 +28,21 @@ public class Vector2D {
 	public void setY(double y){
 		this.y = y;
 	}
+
+	public void add(Vector2D other) {
+        this.x += other.x;
+        this.y += other.y;
+    }
+
+	public Vector2D multiply(double scalar) {
+        return new Vector2D(this.x * scalar, this.y * scalar);
+    }
+
+	@Override
+	public String toString(){
+		return "Vector2D{" +
+				"x=" + x +
+				", y=" + y +
+				'}';
+	}
 }

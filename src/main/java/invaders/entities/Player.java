@@ -1,5 +1,6 @@
 package invaders.entities;
 
+import invaders.engine.GameEngine;
 import invaders.logic.Damagable;
 import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
@@ -61,7 +62,12 @@ public class Player implements Moveable, Damagable, Renderable {
     }
 
     public void shoot(){
-        // todo
+        ProjectileFactory factory = new ProjectileFactory();
+        Vector2D position = this.getPosition();
+        Vector2D velocity = new Vector2D(0, -1);
+        Projectile projectile = factory.createProjectile("fast_straight", position, velocity);
+        System.out.println("Projectile position: " + projectile.getPosition()); // Add this line
+        GameEngine.getInstance().addGameObject(projectile);
     }
 
     @Override

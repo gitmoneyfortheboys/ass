@@ -1,5 +1,9 @@
 package invaders.engine;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +13,10 @@ import invaders.physics.Moveable;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 /**
  * This class manages the main loop and logic of the game
  */
@@ -16,18 +24,33 @@ public class GameEngine {
 
 	private List<GameObject> gameobjects;
 	private List<Renderable> renderables;
+	private List<GameObject> gameObjects;
 	private Player player;
 
 	private boolean left;
 	private boolean right;
+
+	private static GameEngine instance = null;
 
 	public GameEngine(String config){
 		// read the config here
 		gameobjects = new ArrayList<GameObject>();
 		renderables = new ArrayList<Renderable>();
 
-		player = new Player(new Vector2D(200, 380));
-		renderables.add(player);
+		JSONParser parser = new JSONParser();
+		try {
+			InputStream is = getClass().getClassLoader().getResourceAsStream("config.json");
+			JSONObject jsonObject = (JSONObject) parser.parse(new InputStreamReader(is));
+			JSONObject playerObject = (JSONObject) jsonObject.get("Player");
+			JSONObject positionObject = (JSONObject) playerObject.get("position");
+			double x = ((Long) positionObject.get("x")).doubleValue();
+			double y = ((Long) positionObject.get("y")).doubleValue();
+
+			player = new Player(new Vector2D(x, y)); // Player's position is set from config.json
+			renderables.add(player);
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -60,6 +83,13 @@ public class GameEngine {
 				ro.getPosition().setY(1);
 			}
 		}
+	}
+
+	public static GameEngine getInstance(){
+		if(instance == null){
+			instance = new GameEngine("/resources/config.json");
+		}
+		return instance;
 	}
 
 	public List<Renderable> getRenderables(){
@@ -95,5 +125,12 @@ public class GameEngine {
 		if(right){
 			player.right();
 		}
+	}
+
+	public void addGameObject(GameObject gameObject) {
+		this.gameobjects.add(gameObject);
+		if (gameObject instanceof Renderable) {
+        	this.renderables.add((Renderable) gameObject);
+    	}
 	}
 }
